@@ -12,11 +12,10 @@ logger = logging.getLogger('reachy.face.tracking')
 
 async def run_tracking_loop(face_tracking_background):
 
-    logger.info('In tracking loop')
     tracking_threshold = 20 * 20
     track_count = 0
 
-    nobody_here = True
+    # nobody_here = True
 
     face_tracking_background.detection.start()
     face_tracking_background.activate_tracking_mode()

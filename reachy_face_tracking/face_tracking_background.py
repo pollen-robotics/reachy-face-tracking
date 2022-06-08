@@ -11,12 +11,12 @@ from .head_controller import HeadController
 from .detection import Detection
 
 from collections import deque
-
+from pathlib import Path
 from PIL import Image
 
 logger = logging.getLogger('reachy.face.tracking')
 
-model_path = '/home/reachy/dev/reachy-face-tracking/models/ssd_mobilenet_v2_face_quant_postprocess_edgetpu.tflite'
+model_path = str(Path.cwd() / 'models' / 'ssd_mobilenet_v2_face_quant_postprocess_edgetpu.tflite')
 
 
 class FaceTrackingBackground:
@@ -36,8 +36,6 @@ class FaceTrackingBackground:
         self.detection = Detection(self.reachy, detection_model_path=model_path)
         self.controller = HeadController([0, 0], cb=self.servoing, pid_params=[0.0004, 0.0001, 0, 0, 0.017, 0.002])
 
-        self.reachy.turn_on('reachy')
-
     def __enter__(self):
         return self
 
@@ -48,14 +46,14 @@ class FaceTrackingBackground:
                 'exc': exc,
             }
         )
-        self.reachy.turn_off_smoothly('reachy')
+        self.reachy.turn_off('head')
 
     async def setup(self):  # MODIFIED
         logger.info('Setup Reachy before starting.')
         self.reachy.turn_on('head')
+        self.reachy.head.look_at(0.5, 0, 0, 1.5)
 
-        img = self.reachy.right_camera.last_frame
-        self.center = np.array([160, 160]) # np.array([int(np.shape(img)[0]/2), int(np.shape(img)[1]/2)])
+        self.center = np.array([160, 160])
         self.queue.append(self.prev_y)
 
 
@@ -67,9 +65,9 @@ class FaceTrackingBackground:
 
         try:
             thetas = self.reachy.head._look_at(x, y, z)
-            self.reachy.head.neck_disk_bottom.goal_position = thetas[self.reachy.head.neck_disk_bottom]
-            self.reachy.head.neck_disk_middle.goal_position = thetas[self.reachy.head.neck_disk_middle]
-            self.reachy.head.neck_disk_top.goal_position = thetas[self.reachy.head.neck_disk_top]
+            self.reachy.head.neck_roll.goal_position = thetas[self.reachy.head.neck_roll]
+            self.reachy.head.neck_pitch.goal_position = thetas[self.reachy.head.neck_pitch]
+            self.reachy.head.neck_yaw.goal_position = thetas[self.reachy.head.neck_yaw]
 
         except ValueError:
             return
@@ -93,9 +91,9 @@ class FaceTrackingBackground:
             goal=self.center,
             input_controller=[self.xM, self.yM]
             )
-        logger.info(
-            f'{self.cmd_y, self.cmd_z}'
-        )
+        # logger.info(
+        #     f'{self.cmd_y, self.cmd_z}'
+        # )
         self.prev_y, self.prev_z = self.cmd_y, self.cmd_z
         self.queue.append(self.prev_y)
 
