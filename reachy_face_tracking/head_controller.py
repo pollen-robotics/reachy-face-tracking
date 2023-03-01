@@ -1,5 +1,4 @@
 """."""
-import logging
 import time
 import numpy as np
 
@@ -68,9 +67,6 @@ class HeadController(object):
         self.target = self.alpha * new_target + (1 - self.alpha) * self.target
 
         self.last_update.append(self.t0)
-        dt = np.diff(self.last_update)
-        # if len(dt):
-        # self.dt = dt.mean() + self.overlap_factor * dt.std()
 
     def interpolate(self):
         direction = self.target - self.origin

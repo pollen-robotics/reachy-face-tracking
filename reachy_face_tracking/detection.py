@@ -9,7 +9,6 @@ import cv2 as cv
 from pycoral.utils.edgetpu import make_interpreter
 from pycoral.adapters import common
 from pycoral.adapters import detect
-from tflite_runtime import interpreter
 
 
 class Detection(object):

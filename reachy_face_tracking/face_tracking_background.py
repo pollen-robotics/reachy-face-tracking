@@ -2,9 +2,6 @@
 import logging
 import numpy as np
 import time
-import os
-import asyncio
-
 
 from reachy_sdk import ReachySDK
 from .head_controller import HeadController
@@ -12,7 +9,6 @@ from .detection import Detection
 
 from collections import deque
 from pathlib import Path
-from PIL import Image
 
 logger = logging.getLogger('reachy.face.tracking')
 
@@ -55,7 +51,6 @@ class FaceTrackingBackground:
 
         self.center = np.array([160, 160])
         self.queue.append(self.prev_y)
-
 
     # Functions related to tracking
 

@@ -2,7 +2,6 @@ import logging
 import time
 import asyncio
 
-import numpy as np
 import zzlog
 
 from .face_tracking_background import FaceTrackingBackground
@@ -14,8 +13,6 @@ async def run_tracking_loop(face_tracking_background):
 
     tracking_threshold = 20 * 20
     track_count = 0
-
-    # nobody_here = True
 
     face_tracking_background.detection.start()
     face_tracking_background.activate_tracking_mode()
@@ -49,10 +46,7 @@ async def run_tracking_loop(face_tracking_background):
                     'No one detected, Reachy plays random behavior.',
                 )
                 track_count = 0
-                # flyer_background.deactivate_tracking_mode()
                 time.sleep(0.2)
-                # flyer_background.idleForever.start()
-                # was_in_idle_mode = True
 
         time.sleep(0.02)
 
