@@ -86,11 +86,13 @@ class Detection(object):
 
                 if max(sizes) < 2.5*self._prev_face_target[2]:
                     self._face_emb[:4] = face_emb[np.argmin(dist_face)]
+                    self._face_emb[4] = sizes[np.argmin(dist_face)]
                     self._face_target[0], self._face_target[1] = faces[np.argmin(dist_face)]
                     self._face_target[2] = sizes[np.argmin(dist_face)]
 
                 else:
                     self._face_emb[:4] = face_emb[np.argmax(max(sizes))]
+                    self._face_emb[4] = max(sizes)
                     self._face_target[0], self._face_target[1] = faces[np.argmax(max(sizes))]
                     self._face_target[2] = max(sizes)
 
