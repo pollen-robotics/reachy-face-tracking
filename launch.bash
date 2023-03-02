@@ -1,0 +1,1 @@
+python3 -m reachy_face_tracking.face_tracking_launcher
