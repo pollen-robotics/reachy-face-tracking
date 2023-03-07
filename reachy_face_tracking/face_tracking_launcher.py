@@ -1,8 +1,13 @@
+"""
+Face tracking application for Reachy 2021.
+
+This package defines an autonomous mode where Reachy tracks the face
+of the person closest to it.
+"""
 import logging
 import time
 import asyncio
 
-import numpy as np
 import zzlog
 
 from .face_tracking_background import FaceTrackingBackground

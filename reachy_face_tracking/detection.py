@@ -9,7 +9,6 @@ import cv2 as cv
 from pycoral.utils.edgetpu import make_interpreter
 from pycoral.adapters import common
 from pycoral.adapters import detect
-from tflite_runtime import interpreter
 
 
 class Detection(object):
@@ -77,15 +76,17 @@ class Detection(object):
                 sizes, faces, face_emb, dist_face = [], [], [], []
                 for candidate in candidates:
                     x1, y1, x2, y2 = candidate.bbox.xmin, candidate.bbox.ymin, candidate.bbox.xmax, candidate.bbox.ymax
-                    sizes.append((x2-x1)*(y2-y1))
-                    faces.append([int((x1+x2)/2), int((y1+y2)/2)])
+                    sizes.append((x2 - x1) * (y2 - y1))
+                    faces.append([int((x1 + x2) / 2), int((y1 + y2) / 2)])
                     dist_face.append(
-                        np.square(((x1+x2)/2)-self._prev_face_target[0]) +
-                        np.square(((y1+y2)/2)-self._prev_face_target[1])
-                        )
+                        np.square(
+                            ((x1 + x2) / 2) - self._prev_face_target[0]
+                        ) + np.square(
+                            ((y1 + y2) / 2) - self._prev_face_target[1]
+                        ))
                     face_emb.append([x1, y1, x2, y2])
 
-                if max(sizes) < 2.5*self._prev_face_target[2]:
+                if max(sizes) < 2.5 * self._prev_face_target[2]:
                     self._face_emb[:4] = face_emb[np.argmin(dist_face)]
                     self._face_target[0], self._face_target[1] = faces[np.argmin(dist_face)]
                     self._face_target[2] = sizes[np.argmin(dist_face)]
@@ -104,6 +105,7 @@ class Detection(object):
             time.sleep(0.01)
 
     def face_detect(self, image: Image):
+        """Return the face detection inference result for a given image."""
         image.resize(self._input_interpreter_size, Image.ANTIALIAS)
         common.set_input(self.interpreter, image)
         self.interpreter.invoke()

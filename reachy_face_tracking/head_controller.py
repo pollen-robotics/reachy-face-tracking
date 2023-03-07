@@ -1,5 +1,7 @@
-"""."""
-import logging
+"""Head controller module.
+
+Define orbita control loop so perform the face tracking.
+"""
 import time
 import numpy as np
 
@@ -8,7 +10,7 @@ from threading import Thread, Event
 
 
 class HeadController(object):
-    """."""
+    """Head controller class."""
     def __init__(
         self,
         initial_position,
@@ -38,6 +40,7 @@ class HeadController(object):
         self._time = [time.time()]
 
     def start(self):
+        """Start controlling orbita."""
         if not self.is_running():
             self._t = Thread(target=self._run)
             self._t.daemon = True
@@ -45,11 +48,13 @@ class HeadController(object):
             self.running.wait()
 
     def stop(self):
+        """Stop controlling orbita."""
         if self.is_running():
             self.running.clear()
             self._t.join()
 
     def is_running(self):
+        """Return if the head controller's thread is running."""
         if self._t is not None:
             return self._t.is_alive()
 
@@ -61,24 +66,26 @@ class HeadController(object):
             time.sleep(0.01)
 
     def set_new_target(self, new_target):
-
+        """Define the target for the servoing."""
         self._time.append(time.time())
         self.origin = self.interpolate()
         self.t0 = time.time()
         self.target = self.alpha * new_target + (1 - self.alpha) * self.target
 
         self.last_update.append(self.t0)
-        dt = np.diff(self.last_update)
+        # dt = np.diff(self.last_update)
         # if len(dt):
         # self.dt = dt.mean() + self.overlap_factor * dt.std()
 
     def interpolate(self):
+        """Interpolate positions to get a smoother control."""
         direction = self.target - self.origin
         t = np.clip((time.time() - self.t0) / self.dt, 0, 1)
 
         return self.origin + direction * t
 
     def track(self, cmd_yz, prev_yz, goal, input_controller):
+        """Define main control loop."""
         cmd_y, cmd_z = cmd_yz
         prev_y, prev_z = prev_yz
         xM, yM = input_controller
@@ -89,8 +96,8 @@ class HeadController(object):
 
         # dt = self._time[-1] - self._time[-2]
 
-        cmd_z += np.round(-target[0] * Kpz + (target[0] - prev_z)*self.dt*Kdz, 3)
-        cmd_y += np.round(-target[1] * Kpy + (target[1] - prev_y)*self.dt*Kdy, 3)
+        cmd_z += np.round(-target[0] * Kpz + (target[0] - prev_z) * self.dt * Kdz, 3)
+        cmd_y += np.round(-target[1] * Kpy + (target[1] - prev_y) * self.dt * Kdy, 3)
 
         self.set_new_target([cmd_y, cmd_z])
         return cmd_y, cmd_z
