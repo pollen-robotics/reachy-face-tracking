@@ -12,7 +12,7 @@ from pathlib import Path
 
 logger = logging.getLogger('reachy.face.tracking')
 
-model_path = str(Path.cwd() / 'models' / 'ssd_mobilenet_v2_face_quant_postprocess_edgetpu.tflite')
+model_path = '/home/reachy/dev/reachy-face-tracking/models/ssd_mobilenet_v2_face_quant_postprocess_edgetpu.tflite'
 
 
 class FaceTrackingBackground:
@@ -75,12 +75,10 @@ class FaceTrackingBackground:
     def activate_tracking_mode(self):
         """Start head controller."""
         self.controller.start()
-        # self.a_moves.start()
 
     def deactivate_tracking_mode(self):
         """Stop head controller."""
         self.controller.stop()
-        # self.a_moves.stop()
 
     def get_target_info(self):
         """Get coordinates of the face to track, in image frame."""
