@@ -2,7 +2,7 @@
 
 The face tracking project is an autonomous application in which Reachy will detect faces in its field of view and track the detected face that is closet to it.
 
-This can be used as is to make demo with the robot, show the capabilities of the [Orbita actuator](http://localhost:1313/sdk/first-moves/head/#reachys-neck-orbita-actuator) or serve as a brick to build more complex and interactive applications.
+This can be used as is to make demo with the robot, show the capabilities of the [Orbita actuator](https://pollen-robotics.github.io/reachy-2021-docs/sdk/first-moves/head/#reachys-neck-orbita-actuator) or serve as a brick to build more complex and interactive applications.
 
 ## How to install and run the application
 
